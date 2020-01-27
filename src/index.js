@@ -32,17 +32,16 @@ app.post("/upload", function(req, res) {
     return res.status(400).send("No files were uploaded.");
   }
 
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  let sampleFile = req.files.foo;
+  const files = Array.isArray(req.files.userFile) ? req.files.userFile : [req.files.userFile]
 
-  // Use the mv() method to place the file somewhere on your server
-  sampleFile.mv(`/src/UserUpload/${sampleFile.name}`, function(err) {
-    if (err) return res.status(500).send(err);
-
-    res.send("File uploaded!");
+  // The name of the input field
+  req.files.userFile.forEach(file => {
+    // Use the mv() method to place the file somewhere on your server
+    file.mv(`uploads/${file.name}`, (err) => {
+      if (err) return res.status(500).send(err);
+      res.send("File uploaded!");
+    });
   });
-
-  console.log(req.files.foo); // the uploaded file object
 });
 
 //start server and listen for the request
